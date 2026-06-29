@@ -304,19 +304,19 @@
       <div class="svc-grid">
         <div class="svc-tier primary">
           <div class="fee">$25 <span>travel fee</span></div>
-          <h3>Within 25 Miles</h3>
+          <h3>Within 20 Miles</h3>
           <p>Chicago — all South &amp; West Side neighborhoods — plus the nearby south &amp; southwest suburbs: Oak Lawn, Evergreen Park, Calumet City, Blue Island, Dolton, Riverdale, Burbank, Alsip, Bridgeview, Crestwood, Worth, Markham, Harvey, and more.</p>
         </div>
         <div class="svc-tier">
           <div class="fee">$50 <span>travel fee</span></div>
-          <h3>Beyond 25 Miles</h3>
+          <h3>Beyond 20 Miles</h3>
           <p>Farther across Chicagoland — the outer south, southwest, and west suburbs and surrounding areas. We still come right to you; the trip fee is simply a little higher.</p>
         </div>
       </div>
-      <div class="svc-note">📍 <b>Not sure if you're within 25 miles?</b> Go ahead and book the <b>“Within 25 Miles”</b> option — we'll confirm your exact travel fee from your address before your appointment, so there are never any surprises.</div>
+      <div class="svc-note">📍 <b>Not sure if you're within 20 miles?</b> Go ahead and book the <b>“Within 20 Miles”</b> option — we'll confirm your exact travel fee from your address before your appointment, so there are never any surprises.</div>
       <div class="svc-map-wrap">
         <div id="svc-map"></div>
-        <p class="svc-map-cap">Approximate 25-mile service area across Chicago &amp; the south suburbs. Your exact fee is confirmed from your address at booking.</p>
+        <p class="svc-map-cap">Approximate 20-mile service area across Chicago &amp; the south suburbs. Your exact fee is confirmed from your address at booking.</p>
       </div>
     </div>
   </section>
@@ -462,7 +462,7 @@
           maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
         var circle = L.circle(center, {
-          radius: 40233, // 25 miles in meters
+          radius: 32187, // 20 miles in meters
           color: '#c9a24b', weight: 2, fillColor: '#c9a24b', fillOpacity: 0.12
         }).addTo(map);
         map.setView(center, 9);
