@@ -453,19 +453,31 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (function () {
-      var el = document.getElementById('svc-map');
-      if (!el || !window.L) return;
-      var center = [41.745, -87.62]; // approximate South Side center point (not an exact address)
-      var map = L.map('svc-map', { scrollWheelZoom: false, zoomControl: true });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-      var circle = L.circle(center, {
-        radius: 40233, // 25 miles in meters
-        color: '#c9a24b', weight: 2, fillColor: '#c9a24b', fillOpacity: 0.12
-      }).addTo(map);
-      map.fitBounds(circle.getBounds(), { padding: [20, 20] });
+      function init() {
+        var el = document.getElementById('svc-map');
+        if (!el || !window.L) return;
+        var center = [41.745, -87.62]; // approximate South Side center (not an exact address)
+        var map = L.map('svc-map', { scrollWheelZoom: false });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        var circle = L.circle(center, {
+          radius: 40233, // 25 miles in meters
+          color: '#c9a24b', weight: 2, fillColor: '#c9a24b', fillOpacity: 0.12
+        }).addTo(map);
+        map.setView(center, 9);
+        function fit() { map.invalidateSize(); map.fitBounds(circle.getBounds(), { padding: [20, 20] }); }
+        setTimeout(fit, 400);
+        window.addEventListener('load', fit);
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function (es) {
+            es.forEach(function (e) { if (e.isIntersecting) { fit(); } });
+          });
+          io.observe(el);
+        }
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+      else init();
     })();
   </script>
 </body>
