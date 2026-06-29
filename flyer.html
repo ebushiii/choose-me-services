@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Choose Me Services — Flyer</title>
+<meta name="hz:slide-selector" content=".slide" />
+<meta name="hz:canvas-width" content="1080" />
+<meta name="hz:canvas-height" content="1350" />
+<link rel="stylesheet" href="https://use.typekit.net/orh5lyp.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "source-sans-3", sans-serif; }
+
+  .slide {
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background:
+      radial-gradient(900px 520px at 78% 8%, rgba(201,162,75,0.22), transparent 60%),
+      linear-gradient(165deg, #14253f 0%, #0b1626 100%);
+    color: #ffffff;
+  }
+
+  /* subtle dot texture */
+  .texture {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.05) 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+    opacity: 0.6;
+  }
+
+  /* gold corner frame */
+  .frame {
+    position: absolute;
+    top: 46px; left: 46px; right: 46px; bottom: 46px;
+    border: 2px solid rgba(201,162,75,0.45);
+    border-radius: 10px;
+  }
+
+  /* ---- header ---- */
+  .seal {
+    position: absolute; top: 96px; left: 50%; transform: translateX(-50%);
+    width: 132px; height: 132px; border-radius: 50%;
+    border: 3px solid #c9a24b;
+    display: flex; align-items: center; justify-content: center;
+    color: #e4cb8c;
+    font-family: "playfair-display", serif; font-weight: 900; font-size: 50px;
+    letter-spacing: 2px;
+    box-shadow: 0 0 0 8px rgba(201,162,75,0.10);
+  }
+  .brandname {
+    position: absolute; top: 250px; left: 0; right: 0; text-align: center;
+    font-weight: 700; letter-spacing: 9px; font-size: 30px;
+    color: #e4cb8c; text-transform: uppercase;
+  }
+  .rule {
+    position: absolute; top: 312px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 2px; background: #c9a24b; opacity: 0.7;
+  }
+
+  /* ---- headline ---- */
+  .eyebrow {
+    position: absolute; top: 366px; left: 0; right: 0; text-align: center;
+    font-size: 24px; letter-spacing: 6px; text-transform: uppercase;
+    color: #aebbcf; font-weight: 600;
+  }
+  .headline {
+    position: absolute; top: 408px; left: 0; right: 0; text-align: center;
+    font-family: "playfair-display", serif; font-weight: 900;
+    font-size: 104px; line-height: 1.02; color: #ffffff;
+  }
+  .headline .gold { color: #e4cb8c; }
+  .tagline {
+    position: absolute; top: 642px; left: 0; right: 0; text-align: center;
+    font-family: "playfair-display", serif; font-weight: 700; font-style: italic;
+    font-size: 46px; color: #e4cb8c;
+  }
+
+  /* ---- service pills ---- */
+  .pills {
+    position: absolute; top: 736px; left: 0; right: 0;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
+    padding: 0 120px;
+  }
+  .pill {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(201,162,75,0.40);
+    color: #f2e9d2; font-size: 27px; font-weight: 600;
+    padding: 14px 28px; border-radius: 999px;
+  }
+
+  /* ---- value lines ---- */
+  .values {
+    position: absolute; top: 858px; left: 50%; transform: translateX(-50%);
+    text-align: center;
+  }
+  .values .line {
+    font-size: 32px; color: #d7deea; font-weight: 500; margin: 10px 0;
+  }
+  .values .line b { color: #ffffff; font-weight: 700; }
+  .values .star { color: #c9a24b; margin-right: 12px; }
+
+  /* ---- CTA block ---- */
+  .cta {
+    position: absolute; left: 90px; right: 90px; bottom: 150px;
+    background: linear-gradient(150deg, #c9a24b 0%, #b88f3a 100%);
+    border-radius: 18px; padding: 34px 30px; text-align: center;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+  }
+  .cta .label { color: #3a2f12; font-size: 26px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  .cta .phone {
+    color: #0b1626; font-family: "playfair-display", serif; font-weight: 900;
+    font-size: 72px; line-height: 1.1; margin-top: 4px;
+  }
+  .cta .sub { color: #3a2f12; font-size: 26px; font-weight: 600; margin-top: 4px; }
+
+  /* ---- footer strip ---- */
+  .footer {
+    position: absolute; left: 0; right: 0; bottom: 70px; text-align: center;
+  }
+  .footer .area { font-size: 26px; color: #aebbcf; font-weight: 600; letter-spacing: 1px; }
+  .owned {
+    display: inline-block; margin-top: 14px;
+    background: rgba(201,162,75,0.16); border: 1px solid rgba(201,162,75,0.45);
+    color: #e4cb8c; font-size: 21px; font-weight: 700; letter-spacing: 1px;
+    padding: 8px 22px; border-radius: 999px;
+  }
+</style>
+</head>
+<body>
+  <div class="slide">
+    <div class="texture"></div>
+    <div class="frame"></div>
+
+    <div class="seal">CM</div>
+    <div class="brandname">Choose&nbsp;Me&nbsp;Services</div>
+    <div class="rule"></div>
+
+    <div class="eyebrow">Professional Mobile Notary</div>
+    <div class="headline">Chicago<br><span class="gold">Notary</span></div>
+    <div class="tagline">I come to you.</div>
+
+    <div class="pills">
+      <span class="pill">General Notary</span>
+      <span class="pill">Mobile Notary</span>
+      <span class="pill">Evenings &amp; Weekends</span>
+    </div>
+
+    <div class="values">
+      <div class="line"><span class="star">✦</span> <b>Same-day</b> &amp; last-minute appointments</div>
+      <div class="line"><span class="star">✦</span> Home, office, hospital — <b>wherever you are</b></div>
+      <div class="line"><span class="star">✦</span> Fast, friendly &amp; <b>reliable</b></div>
+    </div>
+
+    <div class="cta">
+      <div class="label">Call or Text to Book</div>
+      <div class="phone">(708) 918-3335</div>
+      <div class="sub">choosemeservices@gmail.com</div>
+    </div>
+
+    <div class="footer">
+      <div class="area">📍 Serving Chicagoland &amp; the South Side</div>
+      <div class="owned">BLACK WOMAN–OWNED BUSINESS</div>
+    </div>
+  </div>
+</body>
+</html>
