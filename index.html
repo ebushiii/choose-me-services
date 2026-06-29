@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
 <style>
   :root {
@@ -159,6 +160,21 @@
   .why-item p { color: #c2cbda; font-size: 0.96rem; }
   .why-item .num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--gold); display:block; margin-bottom: 6px; }
 
+  /* ---------- Service Area ---------- */
+  .svc { background: #fbfaf6; }
+  .svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 38px; }
+  .svc-tier { background: #fff; border: 1px solid #ece7d8; border-radius: var(--radius); padding: 30px 28px; box-shadow: 0 8px 24px rgba(17,32,58,0.05); }
+  .svc-tier.primary { border: 1.5px solid var(--gold); box-shadow: 0 14px 36px rgba(201,162,75,0.16); }
+  .svc-tier .fee { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 2.1rem; color: var(--navy); line-height: 1; }
+  .svc-tier .fee span { font-size: 0.95rem; color: var(--muted); font-weight: 600; font-family: 'Inter', sans-serif; }
+  .svc-tier h3 { color: var(--navy); font-family: 'Inter', sans-serif; font-weight: 700; margin: 8px 0 10px; font-size: 1.1rem; }
+  .svc-tier p { color: var(--muted); font-size: 0.96rem; line-height: 1.58; }
+  .svc-note { margin-top: 22px; background: #fff7e6; border: 1px solid #f0e2bd; color: #7a6320; padding: 16px 20px; border-radius: 12px; font-size: 0.97rem; line-height: 1.55; }
+  .svc-map-wrap { margin-top: 30px; }
+  #svc-map { height: 360px; width: 100%; border-radius: var(--radius); border: 1px solid #e3ddcd; box-shadow: 0 8px 24px rgba(17,32,58,0.06); z-index: 0; }
+  .svc-map-cap { margin-top: 10px; font-size: 0.82rem; color: var(--muted); text-align: center; }
+  @media (max-width: 760px) { .svc-grid { grid-template-columns: 1fr; } #svc-map { height: 300px; } }
+
   /* ---------- Reviews ---------- */
   .reviews { background: #fbfaf6; }
   .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; margin-top: 40px; }
@@ -275,6 +291,32 @@
           <h3>Evenings &amp; Weekends</h3>
           <p>A schedule that works around yours. Weekday evenings plus Saturday and Sunday — because life doesn't stop at 5 PM.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE AREA -->
+  <section class="block svc">
+    <div class="wrap">
+      <div class="eyebrow">Service Area</div>
+      <h2 class="section-title">Where We Go &amp; Travel Fees</h2>
+      <p class="section-sub">A flat travel fee covers the trip to you — that's it. Not sure which one applies? Just book, and we confirm it from your address first.</p>
+      <div class="svc-grid">
+        <div class="svc-tier primary">
+          <div class="fee">$25 <span>travel fee</span></div>
+          <h3>Within 25 Miles</h3>
+          <p>Chicago — all South &amp; West Side neighborhoods — plus the nearby south &amp; southwest suburbs: Oak Lawn, Evergreen Park, Calumet City, Blue Island, Dolton, Riverdale, Burbank, Alsip, Bridgeview, Crestwood, Worth, Markham, Harvey, and more.</p>
+        </div>
+        <div class="svc-tier">
+          <div class="fee">$50 <span>travel fee</span></div>
+          <h3>Beyond 25 Miles</h3>
+          <p>Farther across Chicagoland — the outer south, southwest, and west suburbs and surrounding areas. We still come right to you; the trip fee is simply a little higher.</p>
+        </div>
+      </div>
+      <div class="svc-note">📍 <b>Not sure if you're within 25 miles?</b> Go ahead and book the <b>“Within 25 Miles”</b> option — we'll confirm your exact travel fee from your address before your appointment, so there are never any surprises.</div>
+      <div class="svc-map-wrap">
+        <div id="svc-map"></div>
+        <p class="svc-map-cap">Approximate 25-mile service area across Chicago &amp; the south suburbs. Your exact fee is confirmed from your address at booking.</p>
       </div>
     </div>
   </section>
@@ -408,5 +450,23 @@
     </div>
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function () {
+      var el = document.getElementById('svc-map');
+      if (!el || !window.L) return;
+      var center = [41.745, -87.62]; // approximate South Side center point (not an exact address)
+      var map = L.map('svc-map', { scrollWheelZoom: false, zoomControl: true });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      var circle = L.circle(center, {
+        radius: 40233, // 25 miles in meters
+        color: '#c9a24b', weight: 2, fillColor: '#c9a24b', fillOpacity: 0.12
+      }).addTo(map);
+      map.fitBounds(circle.getBounds(), { padding: [20, 20] });
+    })();
+  </script>
 </body>
 </html>
