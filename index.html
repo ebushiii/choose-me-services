@@ -175,6 +175,15 @@
   .svc-map-cap { margin-top: 10px; font-size: 0.82rem; color: var(--muted); text-align: center; }
   @media (max-width: 760px) { .svc-grid { grid-template-columns: 1fr; } #svc-map { height: 300px; } }
 
+  /* ---------- Team band ---------- */
+  .teamband-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 52px; align-items: center; }
+  .teamband-photo img { display: block; width: 100%; max-width: 420px; border-radius: 20px; border: 1px solid rgba(201,162,75,0.45); box-shadow: 0 22px 54px rgba(17,32,58,0.18); }
+  @media (max-width: 820px) {
+    .teamband-grid { grid-template-columns: 1fr; gap: 28px; }
+    .teamband-photo { text-align: center; }
+    .teamband-photo img { max-width: 320px; margin: 0 auto; }
+  }
+
   /* ---------- Reviews ---------- */
   .reviews { background: #fbfaf6; }
   .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; margin-top: 40px; }
@@ -261,7 +270,7 @@
       </div><!-- /hero-text -->
       <div class="hero-photo">
         <div class="frame-wrap">
-          <img src="team.png" alt="The Choose Me Services notary team in Chicago" />
+          <img src="malika.png" alt="Malika — Choose Me Services mobile notary in Chicago" />
           <span class="badge">📍 Chicago Mobile Notary</span>
         </div>
       </div>
@@ -331,6 +340,23 @@
         <div class="why-item"><span class="num">⚡</span><h3>Fast &amp; Flexible</h3><p>Same-day and last-minute appointments whenever possible. Quick to respond, easy to book.</p></div>
         <div class="why-item"><span class="num">🤝</span><h3>Professional &amp; Friendly</h3><p>Careful, accurate, and warm. Your documents are handled with real care.</p></div>
         <div class="why-item"><span class="num">🌆</span><h3>South Side Proud</h3><p>Rooted in the community, serving neighbors across the South Side and all of Chicagoland.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM PHOTO -->
+  <section class="block">
+    <div class="wrap teamband-grid">
+      <div class="teamband-photo">
+        <img src="team.png" alt="Choose Me Services — professional notary service in Chicago" />
+      </div>
+      <div class="teamband-text">
+        <div class="eyebrow">Professional &amp; Trusted</div>
+        <h2 class="section-title">Notary Service Done Right</h2>
+        <p class="section-sub">Choose Me Services brings a polished, professional standard to every appointment — accurate, discreet, and always on time. Whether it's a single signature or a stack of documents, your notarization is handled with real care and treated with the seriousness it deserves.</p>
+        <div class="cta-row" style="margin-top: 26px;">
+          <a class="btn btn-primary" href="https://book.squareup.com/appointments/3lkk93l4jg1hsr/location/LD8N7G1JMHT05" target="_blank" rel="noopener">📅 Book Online</a>
+        </div>
       </div>
     </div>
   </section>
