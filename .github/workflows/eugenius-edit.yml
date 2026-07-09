@@ -1,0 +1,72 @@
+name: Eugenius Edit
+
+# Triggered by Eugenius when a client requests a change. Edits a branch, pushes
+# it, and reports a preview URL back to the app. Never touches production —
+# going live is a separate merge to main, done only after approval.
+on:
+  repository_dispatch:
+    types: [eugenius_change]
+
+concurrency:
+  group: eugenius-change-${{ github.event.client_payload.change_id }}
+  cancel-in-progress: true
+
+jobs:
+  edit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Create working branch
+        run: git checkout -B "${{ github.event.client_payload.branch }}"
+
+      - name: Apply AI edit
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          REQUEST_TEXT: ${{ github.event.client_payload.request_text }}
+        run: node .github/eugenius/edit.mjs
+
+      - name: Commit & push branch
+        run: |
+          git config user.name "Eugenius Bot"
+          git config user.email "bot@etreproductions.com"
+          git add -A
+          git commit -m "Eugenius change #${{ github.event.client_payload.change_id }}"
+          git push origin "${{ github.event.client_payload.branch }}" --force
+
+      - name: Report preview ready
+        if: success()
+        env:
+          CALLBACK_URL: ${{ github.event.client_payload.callback_url }}
+          CALLBACK_SECRET: ${{ github.event.client_payload.callback_secret }}
+          CHANGE_ID: ${{ github.event.client_payload.change_id }}
+          BRANCH: ${{ github.event.client_payload.branch }}
+        run: |
+          export SHA="$(git rev-parse HEAD)"
+          export PREVIEW="https://raw.githack.com/${GITHUB_REPOSITORY}/${BRANCH}/index.html"
+          BODY="$(node -e 'console.log(JSON.stringify({change_id:Number(process.env.CHANGE_ID),status:"preview_ready",preview_url:process.env.PREVIEW,commit_sha:process.env.SHA}))')"
+          curl -sS -X POST "$CALLBACK_URL" \
+            -H "x-callback-secret: $CALLBACK_SECRET" \
+            -H "Content-Type: application/json" \
+            -d "$BODY" || true
+
+      - name: Report failure
+        if: failure()
+        env:
+          CALLBACK_URL: ${{ github.event.client_payload.callback_url }}
+          CALLBACK_SECRET: ${{ github.event.client_payload.callback_secret }}
+          CHANGE_ID: ${{ github.event.client_payload.change_id }}
+        run: |
+          BODY="$(node -e 'console.log(JSON.stringify({change_id:Number(process.env.CHANGE_ID),status:"failed",error:"The edit could not be applied."}))')"
+          curl -sS -X POST "$CALLBACK_URL" \
+            -H "x-callback-secret: $CALLBACK_SECRET" \
+            -H "Content-Type: application/json" \
+            -d "$BODY" || true
