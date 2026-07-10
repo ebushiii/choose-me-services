@@ -23,9 +23,8 @@ const system =
   "Apply ONLY the change the client asks for. Preserve everything else exactly — structure, " +
   "styling, scripts, and any content not mentioned. Keep it valid HTML. Do not add comments, " +
   "placeholders, tracking, or external resources that weren't already there. " +
-  'Respond with ONLY a JSON object of the form {"files": {"<filename>": "<full new file contents>"}}, ' +
-  "including ONLY the files you actually changed. Begin your reply immediately with the JSON — " +
-  "no reasoning, no prose, no markdown fences before or after.";
+  "Return your edit by calling the submit_edited_files tool — include ONLY the files you " +
+  "actually changed, each with its complete new contents.";
 
 const userMsg =
   `Change requested by the client:\n"""${REQUEST}"""\n\n` +
@@ -43,12 +42,27 @@ const res = await fetch("https://api.anthropic.com/v1/messages", {
     model: MODEL,
     max_tokens: 32000,
     system,
-    // Prefill the assistant turn so the reply is forced to be JSON (the model
-    // otherwise sometimes prepends an explanation, which breaks parsing).
-    messages: [
-      { role: "user", content: userMsg },
-      { role: "assistant", content: '{"files":' },
+    // Force structured output via a tool — guarantees a valid { files } object
+    // and no stray prose (this model rejects assistant prefill).
+    tools: [
+      {
+        name: "submit_edited_files",
+        description: "Submit the edited website files (only the ones you changed).",
+        input_schema: {
+          type: "object",
+          properties: {
+            files: {
+              type: "object",
+              description: "Map of filename → the file's full new contents.",
+              additionalProperties: { type: "string" },
+            },
+          },
+          required: ["files"],
+        },
+      },
     ],
+    tool_choice: { type: "tool", name: "submit_edited_files" },
+    messages: [{ role: "user", content: userMsg }],
   }),
 });
 
@@ -57,38 +71,20 @@ if (!res.ok) {
   process.exit(1);
 }
 const data = await res.json();
-const completion = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("");
-// We prefilled '{"files":', so the reply continues the JSON object.
-let raw = ('{"files":' + completion).replace(/```(?:json)?/gi, "").trim();
-
-// Parse, falling back to the outermost balanced object if there's trailing text.
-function parseLoose(s) {
-  try { return JSON.parse(s); } catch {}
-  const start = s.indexOf("{");
-  if (start < 0) return null;
-  let depth = 0, inStr = false, esc = false;
-  for (let i = start; i < s.length; i++) {
-    const ch = s[i];
-    if (inStr) {
-      if (esc) esc = false;
-      else if (ch === "\\") esc = true;
-      else if (ch === '"') inStr = false;
-    } else if (ch === '"') inStr = true;
-    else if (ch === "{") depth++;
-    else if (ch === "}") {
-      depth--;
-      if (depth === 0) { try { return JSON.parse(s.slice(start, i + 1)); } catch { return null; } }
-    }
-  }
-  return null;
-}
-
-const parsed = parseLoose(raw);
-if (!parsed) {
-  console.error("could not parse model JSON. First 300 chars:", raw.slice(0, 300));
+// Structured output: pull the forced tool call's `files` argument.
+const toolUse = (data.content || []).find(
+  (b) => b.type === "tool_use" && b.name === "submit_edited_files"
+);
+if (!toolUse || !toolUse.input || typeof toolUse.input.files !== "object") {
+  console.error(
+    "model did not return files. stop_reason:",
+    data.stop_reason,
+    "content:",
+    JSON.stringify(data.content || []).slice(0, 300)
+  );
   process.exit(1);
 }
-const files = parsed.files || {};
+const files = toolUse.input.files;
 const names = Object.keys(files);
 if (names.length === 0) { console.error("model returned no file changes"); process.exit(1); }
 
