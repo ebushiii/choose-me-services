@@ -42,16 +42,25 @@ jobs:
           git commit -m "Eugenius change #${{ github.event.client_payload.change_id }}"
           git push origin "${{ github.event.client_payload.branch }}" --force
 
+      - name: Resolve preview URL
+        if: success()
+        id: preview
+        env:
+          BRANCH: ${{ github.event.client_payload.branch }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+        run: node .github/eugenius/preview.mjs
+
       - name: Report preview ready
         if: success()
         env:
           CALLBACK_URL: ${{ github.event.client_payload.callback_url }}
           CALLBACK_SECRET: ${{ github.event.client_payload.callback_secret }}
           CHANGE_ID: ${{ github.event.client_payload.change_id }}
-          BRANCH: ${{ github.event.client_payload.branch }}
+          PREVIEW: ${{ steps.preview.outputs.preview_url }}
         run: |
           export SHA="$(git rev-parse HEAD)"
-          export PREVIEW="https://raw.githack.com/${GITHUB_REPOSITORY}/${BRANCH}/index.html"
           BODY="$(node -e 'console.log(JSON.stringify({change_id:Number(process.env.CHANGE_ID),status:"preview_ready",preview_url:process.env.PREVIEW,commit_sha:process.env.SHA}))')"
           curl -sS -X POST "$CALLBACK_URL" \
             -H "x-callback-secret: $CALLBACK_SECRET" \
