@@ -37,7 +37,7 @@ jobs:
       - name: Commit & push branch
         run: |
           git config user.name "Eugenius Bot"
-          git config user.email "bot@etreproductions.com"
+          git config user.email "eugene@etreproductions.com"
           git add -A
           git commit -m "Eugenius change #${{ github.event.client_payload.change_id }}"
           git push origin "${{ github.event.client_payload.branch }}" --force
