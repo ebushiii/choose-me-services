@@ -47,7 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           git config user.name  "Eugenius"
-          git config user.email "bot@askeugenius.com"
+          git config user.email "295012144+ebushiii@users.noreply.github.com"  # must map to a GitHub account on the Vercel team, or Vercel blocks the preview
           # A revision reuses the branch, so continue from it when it already
           # exists — otherwise each revision would discard the one before it.
           git fetch origin "$BRANCH" --depth=50 2>/dev/null || true
@@ -155,7 +155,7 @@ jobs:
                 '[.deployments[]? | select(.meta.githubCommitSha == $sha)][0].url // empty')
               break
             fi
-            if [ "$state" = "ERROR" ] || [ "$state" = "CANCELED" ]; then
+            if [ "$state" = "ERROR" ] || [ "$state" = "CANCELED" ] || [ "$state" = "BLOCKED" ]; then
               echo "Vercel build $state"; break
             fi
             sleep 15
