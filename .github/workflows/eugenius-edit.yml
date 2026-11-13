@@ -210,8 +210,10 @@ jobs:
           SHA: ${{ steps.push.outputs.sha }}
         run: |
           set -euo pipefail
-          jq -n --argjson id "$ID" --arg url "$URL" --arg sha "$SHA" \
-            '{change_id:$id, status:"preview_ready", preview_url:$url, commit_sha:$sha}' \
+          # Pass along the builder's plain-language note so the client sees what changed.
+          note=$(head -c 900 /tmp/builder-note.txt 2>/dev/null || true)
+          jq -n --argjson id "$ID" --arg url "$URL" --arg sha "$SHA" --arg note "$note" \
+            '{change_id:$id, status:"preview_ready", preview_url:$url, commit_sha:$sha, note:$note}' \
           | curl -sS -X POST "$CB" -H "content-type: application/json" \
                  -H "x-callback-secret: $SECRET" --data @-
 
