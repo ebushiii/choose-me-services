@@ -1,0 +1,7 @@
+# Internal files: never publish these on the live site
+CLAUDE.md
+README.md
+AGENTS.md
+SETUP.md
+.github
+*.py
